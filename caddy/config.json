@@ -1,0 +1,101 @@
+{
+    "logging": {
+      "logs": {
+        "default": {
+          "level": "DEBUG"
+        }
+      }
+    },
+    "apps": {
+      "http": {
+        "servers": {
+          "campushire": {
+            "listen": [":443"],
+            "routes": [
+              {
+                "@id": "campus-hire.online",
+                "handle": [
+                  {
+                    "handler": "subroute",
+                    "routes": [
+                      {
+                        "handle": [
+                          {
+                            "handler": "reverse_proxy",
+                            "upstreams": [
+                              {
+                                "dial": "frontend:5000"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "match": [
+                  {
+                    "host": [
+                      "campus-hire.online"
+                    ]
+                  }
+                ],
+                "terminal": false
+              }, 
+              {
+                "@id": "api.campus-hire.online",
+                "handle": [
+                  {
+                    "handler": "subroute",
+                    "routes": [
+                      {
+                        "handle": [
+                          {
+                            "handler": "reverse_proxy",
+                            "upstreams": [
+                              {
+                                "dial": "api:8080"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ],
+                "match": [
+                  {
+                    "host": [
+                      "api.campus-hire.online"
+                    ]
+                  }
+                ],
+                "terminal": false
+              }
+            ]
+          }
+        }
+      },
+      "tls": {
+        "automation": {
+          "policies": [
+            {
+              "on_demand": false,
+              "issuers": [
+                {
+                  "ca": "",
+                  "module": "internal"
+                }
+              ],
+              "get_certificate": [
+                {
+                  "via": "path",
+                  "path": "/secrets/fullchain.pem"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+}  

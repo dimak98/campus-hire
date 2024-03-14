@@ -1,0 +1,71 @@
+version: '3.3'
+
+services:
+  caddy:
+    build: ./caddy/
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - XDG_CONFIG_HOME=/config
+      - XDG_DATA_HOME=/data
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16.1-alpine3.19
+    environment:
+      POSTGRES_USER: campusapi
+      POSTGRES_PASSWORD: 1q2w3e4R
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "${POSTGRES_USER}", "-U", "${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  api:
+    build: ./campus-api/
+    environment:
+      DB_HOST: postgres
+      DB_USER: campusapi
+      DB_PASSWORD: 1q2w3e4R
+      DB_NAME: campusapi
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: "587"
+      EMAIL: campushireteam@gmail.com
+      EMAIL_PASSWORD: lumr hxwb poad ixan
+      FRONTEND_URL: https://campus-hire.online
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  cv:
+    build: ./campus-cv/
+    environment:
+      API_KEY: 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
+      ICONS_PATH: /usr/src/app/icons
+      PDF_DIR: /usr/src/app/cvs
+      DB_HOST: postgres
+      DB_USER: campusapi
+      DB_PASSWORD: 1q2w3e4R
+      DB_NAME: campusapi
+    depends_on:
+      - postgres
+
+  frontend:
+    build: ./campus-front/
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+    depends_on:
+      - api
+      - cv
+
+volumes:
+  postgres_data:

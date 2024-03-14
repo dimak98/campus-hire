@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Campus Hire - Student Registration</title>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css'>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        html {
+            height: 100%
+        }
+
+        p {
+            color: grey
+        }
+
+        #heading {
+            text-transform: uppercase;
+            color: #007bff;
+            font-weight: normal
+        }
+
+        #msform {
+            text-align: center;
+            position: relative;
+            margin-top: 20px
+        }
+
+        #msform fieldset {
+            background: white;
+            border: 0 none;
+            border-radius: 0.5rem;
+            box-sizing: border-box;
+            width: 100%;
+            margin: 0;
+            padding-bottom: 20px;
+            position: relative
+        }
+
+        .form-card {
+            text-align: left
+        }
+
+        .form-card .fieldlabels {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-card select {
+            width: 100%;
+            padding: 8px 15px;
+            margin-bottom: 25px;
+            border: 1px solid #ccc;
+            border-radius: 0px;
+            font-family: montserrat;
+            color: #2C3E50;
+            background-color: #ECEFF1;
+            font-size: 16px;
+        }
+
+        #msform fieldset:not(:first-of-type) {
+            display: none
+        }
+
+        #msform input,
+        #msform textarea {
+            padding: 8px 15px 8px 15px;
+            border: 1px solid #ccc;
+            border-radius: 0px;
+            margin-bottom: 25px;
+            margin-top: 2px;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: montserrat;
+            color: #2C3E50;
+            background-color: #ECEFF1;
+            font-size: 16px;
+            letter-spacing: 1px
+        }
+
+        #msform input:focus,
+        #msform textarea:focus {
+            -moz-box-shadow: none !important;
+            -webkit-box-shadow: none !important;
+            box-shadow: none !important;
+            border: 1px solid #673AB7;
+            outline-width: 0
+        }
+
+        #msform .action-button {
+            width: 100px;
+            background: #007bff;
+            font-weight: bold;
+            color: white;
+            border: 0 none;
+            border-radius: 0px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px 0px 10px 5px;
+            float: right
+        }
+
+        #msform .action-button:hover,
+        #msform .action-button:focus {
+            background-color: #311B92
+        }
+
+        #msform .action-button-previous {
+            width: 100px;
+            background: #616161;
+            font-weight: bold;
+            color: white;
+            border: 0 none;
+            border-radius: 0px;
+            cursor: pointer;
+            padding: 10px 5px;
+            margin: 10px 5px 10px 0px;
+            float: right
+        }
+
+        #msform .action-button-previous:hover,
+        #msform .action-button-previous:focus {
+            background-color: #000000
+        }
+
+        .card {
+            z-index: 0;
+            border: none;
+            position: relative
+        }
+
+        .fs-title {
+            font-size: 25px;
+            color: #007bff;
+            margin-bottom: 15px;
+            font-weight: normal;
+            text-align: left
+        }
+
+        .purple-text {
+            color: #007bff;
+            font-weight: normal
+        }
+
+        .steps {
+            font-size: 25px;
+            color: gray;
+            margin-bottom: 10px;
+            font-weight: normal;
+            text-align: right
+        }
+
+        .fieldlabels {
+            color: gray;
+            text-align: left
+        }
+
+        #progressbar {
+            margin-bottom: 30px;
+            overflow: hidden;
+            color: lightgrey
+        }
+
+        #progressbar .active {
+            color: #007bff
+        }
+
+        #progressbar li {
+            list-style-type: none;
+            font-size: 15px;
+            width: 25%;
+            float: left;
+            position: relative;
+            font-weight: 400
+        }
+
+        #progressbar #personal:before {
+            font-family: FontAwesome;
+            content: "\f13e"
+        }
+
+        #progressbar #experience:before {
+            font-family: FontAwesome;
+            content: "\f0b1"
+        }
+
+        #progressbar #education:before {
+            font-family: FontAwesome;
+            content: "\f19d"
+        }
+
+        #progressbar #confirm:before {
+            font-family: FontAwesome;
+            content: "\f00c"
+        }
+
+        #progressbar li:before {
+            width: 50px;
+            height: 50px;
+            line-height: 45px;
+            display: block;
+            font-size: 20px;
+            color: #ffffff;
+            background: lightgray;
+            border-radius: 50%;
+            margin: 0 auto 10px auto;
+            padding: 2px
+        }
+
+        #progressbar li:after {
+            content: '';
+            width: 100%;
+            height: 2px;
+            background: lightgray;
+            position: absolute;
+            left: 0;
+            top: 25px;
+            z-index: -1
+        }
+
+        #progressbar li.active:before,
+        #progressbar li.active:after {
+            background: #007bff
+        }
+
+        .progress {
+            height: 20px
+        }
+
+        .progress-bar {
+            background-color: #007bff
+        }
+
+        .fit-image {
+            width: 100%;
+            object-fit: cover
+        }
+    </style>
+</head>
+
+<body>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-11 col-sm-10 col-md-10 col-lg-6 col-xl-5 text-center p-0 mt-3 mb-2">
+            <div class="card px-0 pt-4 pb-0 mt-3 mb-3">
+                <h2 id="heading">Student Registration</h2>
+                <p>Fill all form fields to go to the next step</p>
+                <form id="msform" class="msform" action="#" method="POST" enctype="multipart/form-data">
+                    <!-- progressbar -->
+                    <ul id="progressbar">
+                        <li class="active" id="personal"><strong>Personal</strong></li>
+                        <li id="experience"><strong>Experience</strong></li>
+                        <li id="education"><strong>Education</strong></li>
+                        <li id="confirm"><strong>Finish</strong></li>
+                    </ul>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <br>
+                    <!-- Personal Information -->
+                    <fieldset>
+                        <div class="form-card">
+                            <label class="fieldlabels">About You:</label>
+                            <textarea name="description" placeholder="Write something about yourself..." rows="4"></textarea>
+                            <label class="fieldlabels">Upload Your Photo:</label>
+                            <input type="file" name="profile_image" accept="image/*">
+                        </div>
+                        <input type="button" name="next" class="next action-button" value="Next" />
+                    </fieldset>
+                    <!-- Experience Section -->
+                    <fieldset id="job1" class="job">
+                        <div class="form-card">
+                            <label class="fieldlabels">Title: *</label> <input type="text" name="jobs[][title]" placeholder="Title" required />
+                            <label class="fieldlabels">Company: *</label> <input type="text" name="jobs[][company]" placeholder="Company" required />
+                            <label class="fieldlabels">Start Date: *</label>
+                            <select name="jobs[][startMonth]" required>
+                                <option value="">Select Month</option>
+                                {% for month in months %}
+                                <option value="{{ month[1] }}">{{ month[0] }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="jobs[][startYear]" required>
+                                <option value="">Select Year</option>
+                                {% for year in years %}
+                                <option value="{{ year }}">{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                            
+                            <label class="fieldlabels">End Date:</label>
+                            <select name="jobs[][endMonth]">
+                                <option value="">Select Month</option>
+                                {% for month in months %}
+                                <option value="{{ month[1] }}">{{ month[0] }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="jobs[][endYear]">
+                                <option value="">Select Year</option>
+                                {% for year in years %}
+                                <option value="{{ year }}">{{ year }}</option>
+                                {% endfor %}
+                            </select>                            
+                            <label class="fieldlabels">Description:</label> <textarea name="jobs[][description]" placeholder="Description"></textarea>
+                        </div>
+                        <input type="button" name="next" class="next action-button" value="Next" />
+                        <input type="button" name="previous" class="previous action-button" value="Back" />
+                    </fieldset>
+                    <!-- Education Section -->
+                    <fieldset id="education1" class="education">
+                        <div class="form-card">
+                            <label class="fieldlabels">School: *</label> <input type="text" name="education[][school]" placeholder="School" required />
+                            <label class="fieldlabels">Degree:</label>
+                            <select name="education[][degree]">
+                                <option value="">None</option>
+                                <option value="Bachelor's">Bachelor's</option>
+                                <option value="Master's">Master's</option>
+                                <option value="PhD">PhD</option>
+                            </select>                     
+                            <label class="fieldlabels">Field of Study:</label>
+                            <select name="education[][fieldOfStudy]" class="select2">
+                                <option value="">Select Field of Study</option>
+                                {% for major in majors %}
+                                <option value="{{ major }}">{{ major }}</option>
+                                {% endfor %}
+                            </select>                                                    
+                            <label class="fieldlabels">Start Date: *</label>
+                            <select name="education[][startMonth]" required>
+                                <option value="">Select Month</option>
+                                {% for month in months %}
+                                <option value="{{ month[1] }}">{{ month[0] }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="education[][startYear]" required>
+                                <option value="">Select Year</option>
+                                {% for year in years %}
+                                <option value="{{ year }}">{{ year }}</option>
+                                {% endfor %}
+                            </select>
+                            <label class="fieldlabels">End Date:</label>
+                            <select name="education[][endMonth]">
+                                <option value="">Select Month</option>
+                                {% for month in months %}
+                                <option value="{{ month[1] }}">{{ month[0] }}</option>
+                                {% endfor %}
+                            </select>
+                            <select name="education[][endYear]">
+                                <option value="">Select Year</option>
+                                {% for year in years %}
+                                <option value="{{ year }}">{{ year }}</option>
+                                {% endfor %}
+                            </select>                            
+                            <label class="fieldlabels">Description:</label> <textarea name="education[][description]" placeholder="Description"></textarea>
+                        </div>
+                        <input type="button" name="next" class="next action-button" value="Next" />
+                        <input type="button" name="previous" class="previous action-button" value="Back" />
+                    </fieldset>
+                    <!-- Final Step Fieldset -->
+                    <fieldset>
+                        <div class="form-card">
+                            <h2 class="purple-text text-center"><strong>Thank you for your registration!</strong></h2>
+                            <br>
+                            <div class="row justify-content-center">
+                                <div class="col-7 text-center">
+                                    <h5 class="purple-text text-center">Please click on Submit button in order to save the data.</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="submitBtn" class="action-button">Submit</button>
+                        <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+                    </fieldset>
+                </form>                
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+<script>
+    function nextStep(currentStep) {
+        document.getElementById(currentStep).style.display = 'none';
+        var nextStep = document.getElementById(currentStep).nextElementSibling;
+        if (nextStep) {
+            nextStep.style.display = 'block';
+        }
+    }
+
+    function prevStep(currentStep) {
+        document.getElementById(currentStep).style.display = 'none';
+        var prevStep = document.getElementById(currentStep).previousElementSibling;
+        if (prevStep) {
+            prevStep.style.display = 'block';
+        }
+    }
+    
+</script>
+<script>
+    // Validation function
+    function validateForm() {
+        var form = document.getElementById("registrationForm");
+        var inputs = form.querySelectorAll("input[type='text'], input[type='date']");
+        var isValid = true;
+
+        inputs.forEach(function(input) {
+            if (input.hasAttribute("required") && !input.value.trim()) {
+                isValid = false;
+                input.classList.add("error");
+            } else {
+                input.classList.remove("error");
+            }
+        });
+
+        return isValid;
+    }
+
+    // Add event listener to the submit button
+    document.getElementById("submitBtn").addEventListener("click", function() {
+        if (validateForm()) {
+            // If form is valid, submit it
+            document.getElementById("registrationForm").submit();
+        } else {
+            // If form is not valid, display error or take appropriate action
+            alert("Please fill in all required fields.");
+        }
+    });
+</script>
+<script>
+    $(document).ready(function(){
+
+    $('.select2').select2({
+        placeholder: "Select Field of Study",
+        allowClear: true,
+        width: 'resolve'
+    });
+
+    document.getElementById('submitBtn').addEventListener('click', function() {
+        document.getElementById('msform').submit();
+    });
+
+    var current_fs, next_fs, previous_fs; //fieldsets
+    var opacity;
+    var current = 1;
+    var steps = $("fieldset").length;
+
+    setProgressBar(current);
+
+    $(".next").click(function(){
+
+    current_fs = $(this).parent();
+    next_fs = $(this).parent().next();
+
+    //Add Class Active
+    $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+
+    //show the next fieldset
+    next_fs.show();
+    //hide the current fieldset with style
+    current_fs.animate({opacity: 0}, {
+    step: function(now) {
+    // for making fielset appear animation
+    opacity = 1 - now;
+
+    current_fs.css({
+    'display': 'none',
+    'position': 'relative'
+    });
+    next_fs.css({'opacity': opacity});
+    },
+    duration: 500
+    });
+    setProgressBar(++current);
+    });
+
+    $(".previous").click(function(){
+
+    current_fs = $(this).parent();
+    previous_fs = $(this).parent().prev();
+
+    //Remove class active
+    $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+
+    //show the previous fieldset
+    previous_fs.show();
+
+    //hide the current fieldset with style
+    current_fs.animate({opacity: 0}, {
+    step: function(now) {
+    // for making fielset appear animation
+    opacity = 1 - now;
+
+    current_fs.css({
+    'display': 'none',
+    'position': 'relative'
+    });
+    previous_fs.css({'opacity': opacity});
+    },
+    duration: 500
+    });
+    setProgressBar(--current);
+    });
+
+    function setProgressBar(curStep){
+    var percent = parseFloat(100 / steps) * curStep;
+    percent = percent.toFixed();
+    $(".progress-bar")
+    .css("width",percent+"%")
+    }
+    });
+</script>
+<script src="https://kit.fontawesome.com/10dc87c9ef.js" crossorigin="anonymous"></script>
+</body>
+</html>

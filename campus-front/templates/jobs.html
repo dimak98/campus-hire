@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>CampusHire</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="{{ url_for('static', filename='assets/img/favicon.png') }}" rel="icon">
+  <link href="{{ url_for('static', filename='assets/img/apple-touch-icon.png') }}" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+  <!-- Bootstrap Icons CSS -->
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  <!-- Boxicons CSS -->
+  <link href="{{ url_for('static', filename='assets/vendor/boxicons/css/boxicons.min.css') }}" rel="stylesheet">
+  <!-- Quill Snow CSS -->
+  <link href="{{ url_for('static', filename='assets/vendor/quill/quill.snow.css') }}" rel="stylesheet">
+  <!-- Quill Bubble CSS -->
+  <link href="{{ url_for('static', filename='assets/vendor/quill/quill.bubble.css') }}" rel="stylesheet">
+  <!-- Remixicon CSS -->
+  <link href="{{ url_for('static', filename='assets/vendor/remixicon/remixicon.css') }}" rel="stylesheet">
+  <!-- Simple DataTables CSS -->
+  <link href="{{ url_for('static', filename='assets/vendor/simple-datatables/style.css') }}" rel="stylesheet">
+<!-- Template Main CSS File -->
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="/" class="logo d-flex align-items-center">
+        <img src="{{ url_for('static', filename='assets/img/logo.png') }}" alt="CampusHire Logo" id="logo">
+        <span class="d-none d-lg-block">CampusHire</span>
+      </a>
+      <i class="bi bi-list toggle-sidebar-btn"></i>
+    </div><!-- End Logo -->
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+        <li class="nav-item dropdown pe-3">
+
+          {% if user_details %}
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            {% if user_details.role == 'company' %}
+              <img src="{{ url_for('static', filename=user_details.image_path) }}" alt="Profile" class="rounded-circle">
+              <span class="d-none d-md-block dropdown-toggle ps-2">{{ user_details.name }}</span>
+            {% elif user_details.role == 'student' %}
+              <img src="{{ url_for('static', filename=user_details.profileImage) }}" alt="Profile" class="rounded-circle">
+              <span class="d-none d-md-block dropdown-toggle ps-2">{{ user_details.fname }}</span>
+            {% endif %}
+          </a><!-- End Profile Iamge Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              {% if user_details.role == 'company' %}
+                <h6>{{ user_details.name }}</h6>
+                <span>{{ user_details.name }}, {{ user_details.address }}</span>
+              {% elif user_details.role == 'student' %}
+                <h6>{{ user_details.fname }}</h6>
+                <span>{{ user_details.jobs[0].title }} | {{ user_details.education[0].degree }} {{ user_details.education[0].fieldOfStudy }}</span>
+              {% endif %}
+            {% endif %}
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{{ url_for('profile') }}">
+                <i class="bi bi-person"></i>
+                <span>My Profile</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{{ url_for('logout') }}">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Sign Out</span>
+              </a>
+            </li>
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+      </ul>
+    </nav><!-- End Icons Navigation -->
+
+  </header><!-- End Header -->
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="/">
+          <i class="bi bi-grid"></i>
+          <span>Dashboard</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('jobs') }}">
+          <i class="bi bi-briefcase"></i>
+        <span>General Jobs</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+
+      </li><!-- End Tables Nav -->
+
+      <li class="nav-heading">_________________________________________</li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('profile') }}">
+          <i class="bi bi-person"></i>
+          <span>Profile</span>
+        </a>
+      </li>
+
+      {% if user_details.role == 'company' %}
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{{ url_for('post_job') }}">
+        <i class="bi bi-patch-plus"></i>
+         <span>Post A Job </span>
+        </a>
+      </li>
+      {% endif %}
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
+
+  <main id="main" class="main">
+
+    <div class="col-12">
+
+      <div class="card overflow-auto">
+        <h5 class="card-title"> Search Quickly <span></span></h5>
+        <div class="search-container">
+          <form action="#" method="GET">
+              <input type="text" name="search" id="search" placeholder="Search For Position...">
+              <button type="submit" id="s.button">Search</button>
+          </form>
+      </div>
+    </div><!-- End Latest Job Opportunities -->
+  
+    <div class="col-12">
+        <div class="card recent-jobs overflow-auto">
+    
+          <div class="card-body">
+            <h5 class="card-title"> Jobs Posted</h5>
+    
+            <table class="table table-borderless datatable">
+    
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Company</th>
+                  <th scope="col">Position</th>
+                  <th scope="col">Salary</th>
+                  <th scope="col">Status</th>
+                </tr>
+              </thead>
+    
+              <tbody>
+                {% if jobs %}
+                {% for job in jobs %}
+                <tr>
+                  <th scope="row"><a href="#">{{ job.id }}</a></th>
+                  <td>{{ job.company_name }}</td>
+                  <td><a href="#" class="text-primary job-title">{{ job.title }}</a></td>
+                  <td>{{ job.salary }}</td>
+                  {% if job.status == 'Open' %}
+                  <td><span class="badge bg-success">Open</span></td>
+                  {% elif job.status == 'Pending' %}
+                  <td><span class="badge bg-warning">Pending</span></td>
+                  {% elif job.status == 'Closed' %}
+                  <td><span class="badge bg-danger">Closed</span></td>
+                  {% endif %}
+                  <td><button class="btn btn-primary">Apply</button></td>
+                  <td><button class="btn btn-primary" onclick="window.location.href='/job/{{ job.id }}'">Open</button></td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+  </main><!-- End #main -->
+
+  <!-- ======= Footer ======= -->
+  <footer id="footer" class="footer">
+    <div class="copyright">
+      &copy; Copyright <strong><span>CampusHire</span></strong>. All Rights Reserved
+    </div>
+    <div class="credits">
+    </div>
+  </footer><!-- End Footer -->
+
+  <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+  <!-- Include JavaScript files -->
+  <script src="{{ url_for('static', filename='assets/vendor/apexcharts/apexcharts.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/chart.js/chart.umd.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/echarts/echarts.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/quill/quill.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/simple-datatables/simple-datatables.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/tinymce/tinymce.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/php-email-form/validate.js') }}"></script>
+  <script src="{{ url_for('static', filename='assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+
+  <!-- Template Main JS File -->
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+  <script>
+    // Get all elements with class "job-title"
+    const jobTitles = document.querySelectorAll('.job-title');
+
+    // Add click event listener to each job title
+    jobTitles.forEach(title => {
+      title.addEventListener('click', () => {
+        // Get the job title text
+        const jobTitle = title.innerText;
+
+        // Create a Google search URL with the job title
+        const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(jobTitle)}`;
+
+        // Open a new tab with the Google search URL
+        window.open(searchUrl, '_blank');
+      });
+    });
+  </script>
+
+</body>
+
+</html>
