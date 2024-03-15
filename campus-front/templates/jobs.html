@@ -153,7 +153,6 @@
         <div class="search-container">
           <form action="#" method="GET">
               <input type="text" name="search" id="search" placeholder="Search For Position...">
-              <button type="submit" id="s.button">Search</button>
           </form>
       </div>
     </div><!-- End Latest Job Opportunities -->
@@ -247,7 +246,31 @@
       });
     });
   </script>
-
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Get the input element and the table rows
+    const searchInput = document.getElementById("search");
+    const tableRows = document.querySelectorAll(".datatable tbody tr");
+  
+    // Function to filter rows based on the search input
+    function filterRows() {
+      const searchTerm = searchInput.value.toLowerCase();
+  
+      tableRows.forEach(row => {
+        const position = row.querySelector(".job-title").textContent.toLowerCase();
+        if (position.includes(searchTerm)) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    }
+  
+    // Add an event listener to the search input
+    searchInput.addEventListener("input", filterRows);
+  });
+  </script>
+  
 </body>
 
 </html>
