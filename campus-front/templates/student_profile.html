@@ -308,7 +308,28 @@
                     </p>
                     <p><strong>Please Note:</strong> After clicking 'Generate New CV with AI,' it may take up to 10 seconds for the PDF to download."</p>
                 
-                    <div class="btn-group" role="group">                    
+                    <div class="btn-group" role="group">
+                        {% if user_details.is_cv_created == 'true' %}
+                        <form action="{{ url_for('generate_student_cv') }}" method="post" class="mb-3">
+                            <button type="submit" class="btn btn-primary" disabled>Generate new CV with AI</button>
+                        </form>
+                        {% elif user_details.is_cv_created == 'false' %}   
+                        <form action="{{ url_for('generate_student_cv') }}" method="post" class="mb-3">
+                          <button type="submit" class="btn btn-primary">Generate new CV with AI</button>
+                        </form>
+                        {% endif %}
+
+                        <p class="small fst-italic"></p>
+
+                        {% if user_details.is_cv_created == 'true' %}
+                        <form action="{{ url_for('download_student_cv') }}" method="post" class="mb-3">
+                          <button type="submit" class="btn btn-primary">Download existing CV</button>
+                        </form>
+                        {% elif user_details.is_cv_created == 'false' %}   
+                        <form action="{{ url_for('download_student_cv') }}" method="post" class="mb-3">
+                          <button type="submit" class="btn btn-primary" disabled>Download existing CV</button>
+                        </form>
+                        {% endif %}
                     </div>
                 </div>                
               </div>
