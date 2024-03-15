@@ -34,6 +34,7 @@ func main() {
     http.HandleFunc("/user_details", handlers.GetUserDetailsHandler(db))
     http.HandleFunc("/student", handlers.GetStudentDetailsHandler(db))
     http.HandleFunc("/company", handlers.GetCompanyDetailsHandler(db))
+    http.HandleFunc("/students", handlers.GetAllStudentsHandler(db))
     http.HandleFunc("/user_role", handlers.GetUserRoleHandler(db))
     http.HandleFunc("/jobs", handlers.GetAllJobsHandler(db))
     http.HandleFunc("/job", handlers.GetJobByIDHandler(db))

@@ -9,6 +9,7 @@ import (
 
 // StudentDetails represents the details of a student.
 type StudentDetails struct {
+    ID           string            `json:"id"`
     Email        string            `json:"email"`
     FName        string            `json:"fname"`
     Role         string            `json:"role"`
@@ -131,7 +132,7 @@ func fetchStudentDetails(db *sql.DB, userID string) (*StudentDetails, error) {
     var studentDetails StudentDetails
 
     // Fetch user details
-    err := db.QueryRow("SELECT email, fname, role FROM users WHERE id = $1", userID).Scan(&studentDetails.Email, &studentDetails.FName, &studentDetails.Role)
+    err := db.QueryRow("SELECT id, email, fname, role FROM users WHERE id = $1", userID).Scan(&studentDetails.ID, &studentDetails.Email, &studentDetails.FName, &studentDetails.Role)
     if err != nil {
         return nil, err
     }
@@ -192,4 +193,79 @@ func fetchCompanyDetails(db *sql.DB, userID string) (*CompanyDetails, error) {
     }
 
     return &companyDetails, nil
+}
+
+// GetAllStudentsHandler handles fetching details of all students.
+func GetAllStudentsHandler(db *sql.DB) http.HandlerFunc {
+    return func(w http.ResponseWriter, r *http.Request) {
+        // Fetch all student details
+        students, err := fetchAllStudentsDetails(db)
+        if err != nil {
+            log.Printf("Error fetching all student details: %v", err)
+            http.Error(w, "Error fetching all student details", http.StatusInternalServerError)
+            return
+        }
+
+        w.Header().Set("Content-Type", "application/json")
+        json.NewEncoder(w).Encode(students)
+    }
+}
+
+// fetchAllStudentsDetails fetches the details of all students from the database.
+func fetchAllStudentsDetails(db *sql.DB) ([]StudentDetails, error) {
+    var students []StudentDetails
+
+    // Fetch all student user details
+    rows, err := db.Query("SELECT id, email, fname, role FROM users WHERE role = 'student'")
+    if err != nil {
+        return nil, err
+    }
+    defer rows.Close()
+
+    for rows.Next() {
+        var student StudentDetails
+        if err := rows.Scan(&student.ID, &student.Email, &student.FName, &student.Role); err != nil {
+            return nil, err
+        }
+
+        // Fetch additional student details
+        err = db.QueryRow("SELECT description, profile_image, is_cv_created, cv_path FROM students WHERE user_id = $1", student.ID).Scan(&student.Description, &student.ProfileImage, &student.IsCvCreated, &student.CvPath)
+        if err != nil {
+            return nil, err
+        }
+
+        // Fetch jobs for the student
+        jobRows, err := db.Query("SELECT title, company, start_date, end_date, description FROM jobs WHERE user_id = $1", student.ID)
+        if err != nil {
+            return nil, err
+        }
+
+        for jobRows.Next() {
+            var job StudentJob
+            if err := jobRows.Scan(&job.Title, &job.Company, &job.StartDate, &job.EndDate, &job.Description); err != nil {
+                return nil, err
+            }
+            student.Jobs = append(student.Jobs, job)
+        }
+        jobRows.Close()
+
+        // Fetch education for the student
+        eduRows, err := db.Query("SELECT school, degree, field_of_study, start_date, end_date, description FROM education WHERE user_id = $1", student.ID)
+        if err != nil {
+            return nil, err
+        }
+
+        for eduRows.Next() {
+            var edu StudentEducation
+            if err := eduRows.Scan(&edu.School, &edu.Degree, &edu.FieldOfStudy, &edu.StartDate, &edu.EndDate, &edu.Description); err != nil {
+                return nil, err
+            }
+            student.Education = append(student.Education, edu)
+        }
+        eduRows.Close()
+
+        students = append(students, student)
+    }
+
+    return students, nil
 }

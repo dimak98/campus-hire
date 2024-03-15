@@ -356,15 +356,24 @@ def main_dashboard():
             if user_details.get('role') == 'student':
                 if 'profileImage' in user_details:
                     user_details['profileImage'] = user_details['profileImage'].split('/static/', 1)[-1]
+                    return render_template('index.html', user_details=user_details, jobs=jobs)
             elif user_details.get('role') == 'company':
                 if 'image_path' in user_details:
                     user_details['image_path'] = user_details['image_path'].split('/static/', 1)[-1]
                 if 'video_path' in user_details:
                     user_details['video_path'] = user_details['video_path'].split('/static/', 1)[-1]
+
+                students_response = requests.get(f'{backend_url}/students')
+                if students_response.status_code == 200:
+                    students = students_response.json()
+                    return render_template('index.html', user_details=user_details, students=students)
+                else:
+                    return render_template('main.html', jobs=jobs)
+
     else:
         return render_template('main.html', jobs=jobs)
 
-    return render_template('index.html', user_details=user_details, jobs=jobs)
+    
 
 @app.route('/jobs')
 def jobs():
