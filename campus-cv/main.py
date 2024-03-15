@@ -13,8 +13,8 @@ app = Flask(__name__)
 
 ICONS_PATH = os.environ.get('ICONS_PATH', '/campus-hire/project/campus-cv/icons')
 PDF_DIR = os.environ.get('PDF_DIR', '/campus-hire/project/campus-cv/cvs')
-API_KEY = os.environ.get('API_KEY', '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')
-DB_HOST = os.environ.get('DB_HOST', 'localhost')
+API_KEY = os.environ.get('API_KEY', 'apikey')
+DB_HOST = os.environ.get('DB_HOST', 'db-host')
 DB_PORT = os.environ.get('DB_PORT', '5432')
 DB_NAME = os.environ.get('DB_NAME', 'your_database_name')
 DB_USER = os.environ.get('DB_USER', 'your_database_user')
@@ -26,7 +26,16 @@ DB_PASSWORD = os.environ.get('DB_PASSWORD', 'your_database_password')
 
 def generate_cv(user_details):
     client = anthropic.Anthropic(api_key=API_KEY)
-    prompt = f"Hi! we have an application which serves as a job search platform for students.\nHere is an information about a student in the system, please generate a professional CV written in native english and the buzzwords HR loves for the following user details, please do not exxagerate and tell lies, and only make it sound better. Another thing that I need is to limit the content into one pdf page (regulrar size) and i want you to in titles: Email, Objective, Education, Experience, Skills:\n{json.dumps(user_details, indent=2)}"
+    prompt = (
+        "Hi! Our application is a job search platform designed specifically for students. "
+        "We aim to create a professional and impactful CV that stands out to HR professionals. "
+        "Below are the details of a student from our system. Please generate a CV that is concise, "
+        "written in native English, and incorporates HR-friendly buzzwords. Ensure that the content "
+        "is truthful and not exaggerated. The CV should be formatted to fit a standard letter-sized PDF page "
+        "and include the following sections: Email, Objective, Education, Experience, and Skills. "
+        "Here are the student's details:\n"
+        f"{json.dumps(user_details, indent=2)}"
+    )    
     message = client.messages.create(
         model="claude-3-opus-20240229",
         max_tokens=1000,
