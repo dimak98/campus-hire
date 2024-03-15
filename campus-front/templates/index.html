@@ -188,21 +188,6 @@
       </div>
     </div>
   </div><!-- End Latest Job Opportunities -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      {% if category == 'error' %}
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ message }}
-      </div>
-      {% else %}
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ message }}
-      </div>
-      {% endif %}
-    {% endfor %}
-  {% endif %}
-{% endwith %}
 
 
 

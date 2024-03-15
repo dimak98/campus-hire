@@ -343,6 +343,7 @@ def profile():
 
 @app.route('/')
 def main_dashboard():
+    jobs = None  # Initialize jobs variable
     jobs_response = requests.get(f'{backend_url}/jobs?latest=true')
     if jobs_response.status_code == 200:
         jobs = jobs_response.json()
@@ -367,11 +368,11 @@ def main_dashboard():
 
 @app.route('/jobs')
 def jobs():
-   
     if not session.get('logged_in'):
         flash('Please log in to access this page.', 'warning')
         return redirect(url_for('login'))
 
+    jobs = None  # Initialize jobs variable
     user_id = session.get('user_id')
     user_details_response = requests.get(f'{backend_url}/user_details?userID={user_id}')
     if user_details_response.status_code == 200:
@@ -390,14 +391,8 @@ def jobs():
     if jobs_response.status_code == 200:
         jobs = jobs_response.json()
 
-    if user_details and jobs:
-        return render_template('jobs.html', user_details=user_details, jobs=jobs)
-    elif user_details and not jobs:
-        return render_template('jobs.html', user_details=user_details)
-    elif not user_details and jobs:
-        return render_template('jobs.html', jobs=jobs)
-    else:
-        return render_template('jobs.html')
+    return render_template('jobs.html', user_details=user_details, jobs=jobs)
+
 
 #######################################################################################
 #                              Company Specific Routes                                #

@@ -66,6 +66,9 @@ services:
     depends_on:
       - api
       - cv
+    volumes:
+      - user_assets:/usr/src/app/templates/static/assets/
 
 volumes:
   postgres_data:
+  user_assets:

@@ -1,6 +1,7 @@
 FROM python:3.10-alpine as builder
 WORKDIR /usr/src/app
 RUN apk add --no-cache --virtual .build-deps gcc musl-dev
+
 COPY requirements.txt .
 RUN python -m venv /venv
 RUN /venv/bin/pip install --upgrade pip

@@ -3,6 +3,7 @@ import anthropic
 import json
 from fpdf import FPDF
 import os
+import psycopg2
 
 #######################################################################################
 #                                         Config                                      #
@@ -13,6 +14,11 @@ app = Flask(__name__)
 ICONS_PATH = os.environ.get('ICONS_PATH', '/campus-hire/project/campus-cv/icons')
 PDF_DIR = os.environ.get('PDF_DIR', '/campus-hire/project/campus-cv/cvs')
 API_KEY = os.environ.get('API_KEY', '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')
+DB_HOST = os.environ.get('DB_HOST', 'localhost')
+DB_PORT = os.environ.get('DB_PORT', '5432')
+DB_NAME = os.environ.get('DB_NAME', 'your_database_name')
+DB_USER = os.environ.get('DB_USER', 'your_database_user')
+DB_PASSWORD = os.environ.get('DB_PASSWORD', 'your_database_password')
 
 #######################################################################################
 #                                         Helpers                                     #
@@ -96,6 +102,28 @@ def create_pdf(cv_content, file_path, user_details, icons_path):
 
     pdf.output(file_path)
 
+def update_student_cv(user_id, cv_path):
+    try:
+        conn = psycopg2.connect(
+            host=DB_HOST,
+            port=DB_PORT,
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASSWORD
+        )
+        cur = conn.cursor()
+        cur.execute(
+            "UPDATE students SET is_cv_created = %s, cv_path = %s WHERE user_id = %s",
+            (True, cv_path, user_id)
+        )
+        conn.commit()
+        cur.close()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"Error updating student CV: {e}")
+        return False
+
 #######################################################################################
 #                                         Routes                                      #
 #######################################################################################
@@ -120,4 +148,8 @@ def generate_cv_pdf():
     # Create the PDF
     create_pdf(cv_content, file_path, user_details, ICONS_PATH)
     
-    return send_from_directory(PDF_DIR, file_name, as_attachment=True)
+    # Update the student's CV details in the database
+    if update_student_cv(user_id, f"/static/assets/pdf/cv/{file_name}"):
+        return send_from_directory(PDF_DIR, file_name, as_attachment=True)
+    else:
+        return {"message": "Failed to update student CV details"}, 500
