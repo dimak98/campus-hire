@@ -125,7 +125,7 @@
     </li><!-- End Dashboard Nav -->
 
     <li class="nav-item">
-      <a class="nav-link collapsed " href="Jobs.html">
+      <a class="nav-link collapsed " href="{{ url_for('jobs') }}">
         <i class="bi bi-briefcase"></i>
       <span>General Jobs</span>
       </a>
@@ -167,9 +167,10 @@
           <div class="card">
             <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
 
-              <h2>pp</h2>
+              <h2>{{ student_details.fname }}</h2>
+              <img src="{{ url_for('static', filename=student_details.profileImage) }}" class="rounded-circle">
               <h3>
-               pp
+                {{ student_details.jobs[0].title }} | {{ student_details.education[0].degree }} {{ student_details.education[0].fieldOfStudy }}
               </h3>
               <div class="social-links mt-2">
                 <a href="https://twitter.com" class="twitter" target="_blank"><i class="bi bi-twitter"></i></a>
@@ -211,26 +212,26 @@
 
                 <div class="tab-pane fade show active profile-overview" id="profile-overview">
                   <h5 class="card-title">About</h5>
-                  <p class="small fst-italic">pp</p>
+                  <p class="small fst-italic">{{ student_details.description }}</p>
                   <h5 class="card-title">Profile Details</h5>
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label ">Full Name</div>
-                    <div class="col-lg-9 col-md-8">pp</div>
+                    <div class="col-lg-9 col-md-8">{{ student_details.fname }}</div>
                   </div>
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Email</div>
-                    <div class="col-lg-9 col-md-8">pp</div>
+                    <div class="col-lg-9 col-md-8">{{ student_details.email }}</div>
                   </div>
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Last Job</div>
-                    <div class="col-lg-9 col-md-8">pp</div>
+                    <div class="col-lg-9 col-md-8">{{ student_details.jobs[0].title }} at {{ student_details.jobs[0].company }}</div>
                   </div>
 
                   <div class="row">
                     <div class="col-lg-3 col-md-4 label">Last Education</div>
                     <div class="col-lg-9 col-md-8">
-                      ppp
+                      {{ student_details.education[0].degree }} {{ student_details.education[0].fieldOfStudy }} at {{ student_details.education[0].school }}
                     </div>
                   </div>
 
@@ -242,27 +243,27 @@
   
                     <div class="row">
                       <div class="col-lg-3 col-md-4 label "> Company:</div>
-                      <div class="col-lg-9 col-md-8">Kevin Anderson</div>
+                      <div class="col-lg-9 col-md-8">{{ student_details.jobs[0].company }}</div>
                     </div>
   
                     <div class="row">
                       <div class="col-lg-3 col-md-4 label">Title:</div>
-                      <div class="col-lg-9 col-md-8">Lueilwitz, Wisoky and Leuschke</div>
+                      <div class="col-lg-9 col-md-8">{{ student_details.jobs[0].title }}</div>
                     </div>
   
                     <div class="row">
                       <div class="col-lg-3 col-md-4 label">Start Date:</div>
-                      <div class="col-lg-9 col-md-8">Web Designer</div>
+                      <div class="col-lg-9 col-md-8">{{ student_details.jobs[0].startDate }}</div>
                     </div>
   
                     <div class="row">
                       <div class="col-lg-3 col-md-4 label">End Date:</div>
-                      <div class="col-lg-9 col-md-8">USA</div>
+                      <div class="col-lg-9 col-md-8">{{ student_details.jobs[0].endDate }}</div>
                     </div>
   
                     <div class="row">
                       <div class="col-lg-3 col-md-4 label">Description:</div>
-                      <div class="col-lg-9 col-md-8">A108 Adam Street, New York, NY 535022</div>
+                      <div class="col-lg-9 col-md-8">{{ student_details.jobs[0].description }}</div>
                     </div>
                 </div>
   
@@ -271,32 +272,32 @@
   
                     <div class="row">
                       <div class="col-lg-3 col-md-4 label "> School:</div>
-                      <div class="col-lg-9 col-md-8">Kevin Anderson</div>
+                      <div class="col-lg-9 col-md-8">{{ student_details.education[0].school }}</div>
                     </div>
   
                     <div class="row">
                       <div class="col-lg-3 col-md-4 label">Degree:</div>
-                      <div class="col-lg-9 col-md-8">Lueilwitz, Wisoky and Leuschke</div>
+                      <div class="col-lg-9 col-md-8">{{ student_details.education[0].degree }}</div>
                     </div>
   
                     <div class="row">
                       <div class="col-lg-3 col-md-4 label">Field Of Study:</div>
-                      <div class="col-lg-9 col-md-8">Web Designer</div>
+                      <div class="col-lg-9 col-md-8">{{ student_details.education[0].fieldOfStudy }}</div>
                     </div>
   
                     <div class="row">
                       <div class="col-lg-3 col-md-4 label">Start Date:</div>
-                      <div class="col-lg-9 col-md-8">USA</div>
+                      <div class="col-lg-9 col-md-8">{{ student_details.education[0].startDate }}</div>
                     </div>
   
                     <div class="row">
                       <div class="col-lg-3 col-md-4 label">End Date:</div>
-                      <div class="col-lg-9 col-md-8">A108 Adam Street, New York, NY 535022</div>
+                      <div class="col-lg-9 col-md-8">{{ student_details.education[0].endDate }}</div>
                     </div>
 
                     <div class="row">
                       <div class="col-lg-3 col-md-4 label"> Description:</div>
-                      <div class="col-lg-9 col-md-8">A108 Adam Street, New York, NY 535022</div>
+                      <div class="col-lg-9 col-md-8">{{ student_details.education[0].description }}</div>
                     </div>
                   </div>
 

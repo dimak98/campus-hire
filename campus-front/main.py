@@ -445,10 +445,9 @@ def student_view(userID):
     response = requests.get(f'{backend_url}/student?userID={userID}')
     if response.status_code == 200:
         student_details = response.json()
-        if 'image_path' in student_details:
-            student_details['image_path'] = student_details['image_path'].split('/static/', 1)[-1]
-        if 'video_path' in student_details:
-            student_details['video_path'] = student_details['video_path'].split('/static/', 1)[-1]
+        if 'profileImage' in student_details:
+            student_details['profileImage'] = student_details['profileImage'].split('/static/', 1)[-1]
+
     else:
         return redirect(url_for('main_dashboard'))
     
