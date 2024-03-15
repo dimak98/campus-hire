@@ -319,7 +319,7 @@
                         </form>
                         {% endif %}
 
-                        <p class="small fst-italic"></p>
+                        <div class="mb-3"></div> <!-- Empty div for spacing -->
 
                         {% if user_details.is_cv_created == 'true' %}
                         <form action="{{ url_for('download_student_cv') }}" method="post" class="mb-3">
