@@ -511,6 +511,29 @@ def generate_student_cv():
 
     return redirect(url_for('profile'))
 
+@app.route('/download_student_cv', methods=['POST'])
+def download_student_cv():
+    if not session.get('logged_in'):
+        flash('Please log in to access this page.', 'warning')
+        return redirect(url_for('login'))
+
+    user_id = session.get('user_id')
+    response = requests.get(f'{backend_url}/user_details?userID={user_id}')
+
+    if response.status_code == 200:
+        user_details = response.json()
+        cv_path = user_details.get('cv_path')
+        cv_path = "/usr/src/app/templates" + cv_path
+
+        if cv_path and os.path.exists(cv_path):
+            return send_from_directory(os.path.dirname(cv_path), os.path.basename(cv_path), as_attachment=True)
+        else:
+            flash('No existing CV found. Please generate or upload a new CV.', 'warning')
+    else:
+        flash('Failed to fetch user details. Please try again.', 'danger')
+
+    return redirect(url_for('profile'))
+
 #######################################################################################
 #                                  Job Specific Routes                                #
 #######################################################################################
