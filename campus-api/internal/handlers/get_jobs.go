@@ -15,11 +15,13 @@ func GetAllJobsHandler(db *sql.DB) http.HandlerFunc {
         var jobs []models.JobPost
         titleFilter := r.URL.Query().Get("title")
         latest := r.URL.Query().Get("latest") == "true"
+        userID := r.URL.Query().Get("user_id")
 
         // Start building the query
-        query := `SELECT jp.id, jp.user_id, jp.title, jp.description, jp.requirements, jp.status, jp.salary, jp.address, COALESCE(c.name, '') AS company_name
+        query := `SELECT jp.id, jp.user_id, jp.title, jp.description, jp.requirements, jp.status, jp.salary, jp.address, COALESCE(c.name, '') AS company_name, u.email AS company_email
                   FROM job_posts jp
-                  LEFT JOIN companies c ON jp.user_id = c.user_id`
+                  LEFT JOIN companies c ON jp.user_id = c.user_id
+                  LEFT JOIN users u ON c.user_id = u.id`
 
         // Add conditions to the query
         var whereClauses []string
@@ -29,6 +31,9 @@ func GetAllJobsHandler(db *sql.DB) http.HandlerFunc {
         }
         if latest {
             whereClauses = append(whereClauses, "jp.created_at >= CURRENT_TIMESTAMP - INTERVAL '2 weeks'")
+        }
+        if userID != "" {
+            whereClauses = append(whereClauses, "jp.id NOT IN (SELECT job_id FROM student_job_applications WHERE user_id = "+userID+")")
         }
         if len(whereClauses) > 0 {
             query += " WHERE " + strings.Join(whereClauses, " AND ")
@@ -45,7 +50,7 @@ func GetAllJobsHandler(db *sql.DB) http.HandlerFunc {
         // Iterate through the returned rows
         for rows.Next() {
             var job models.JobPost
-            if err := rows.Scan(&job.ID, &job.UserID, &job.Title, &job.Description, &job.Requirements, &job.Status, &job.Salary, &job.Address, &job.CompanyName); err != nil {
+            if err := rows.Scan(&job.ID, &job.UserID, &job.Title, &job.Description, &job.Requirements, &job.Status, &job.Salary, &job.Address, &job.CompanyName, &job.CompanyEmail); err != nil {
                 log.Printf("Error scanning job post: %v", err)
                 http.Error(w, "Error reading job posts", http.StatusInternalServerError)
                 return

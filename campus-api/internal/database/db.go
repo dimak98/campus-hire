@@ -90,7 +90,19 @@ func createSchema(db *sql.DB) error {
     if err != nil {
         return fmt.Errorf("error creating jobs table: %v", err)
     }
+
+    studentJobApplicationsQuery := `CREATE TABLE IF NOT EXISTS student_job_applications (
+        user_id INTEGER REFERENCES users(id),
+        job_id INTEGER REFERENCES job_posts(id),
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    );`
     
+    _, err = db.Exec(studentJobApplicationsQuery)
+    if err != nil {
+        return fmt.Errorf("error creating student_job_applications table: %v", err)
+    }
+
     educationQuery := `CREATE TABLE IF NOT EXISTS education (
         id SERIAL PRIMARY KEY,
         user_id INTEGER REFERENCES users(id),

@@ -344,19 +344,23 @@ def profile():
 @app.route('/')
 def main_dashboard():
     jobs = None  # Initialize jobs variable
+    jobs_not_applied = None  # Initialize jobs_not_applied variable
     jobs_response = requests.get(f'{backend_url}/jobs?latest=true')
     if jobs_response.status_code == 200:
         jobs = jobs_response.json()
     user_details = None
     if session.get('logged_in'):
         user_id = session.get('user_id')
+        not_applied_jobs_response = requests.get(f'{backend_url}/jobs?latest=true&user_id={user_id}')
+        if not_applied_jobs_response.status_code == 200:
+            jobs_not_applied = not_applied_jobs_response.json()
         response = requests.get(f'{backend_url}/user_details?userID={user_id}')
         if response.status_code == 200:
             user_details = response.json()
             if user_details.get('role') == 'student':
                 if 'profileImage' in user_details:
                     user_details['profileImage'] = user_details['profileImage'].split('/static/', 1)[-1]
-                    return render_template('index.html', user_details=user_details, jobs=jobs)
+                return render_template('index.html', user_details=user_details, jobs=jobs_not_applied)
             elif user_details.get('role') == 'company':
                 if 'image_path' in user_details:
                     user_details['image_path'] = user_details['image_path'].split('/static/', 1)[-1]
@@ -369,11 +373,8 @@ def main_dashboard():
                     return render_template('index.html', user_details=user_details, students=students)
                 else:
                     return render_template('main.html', jobs=jobs)
-
     else:
         return render_template('main.html', jobs=jobs)
-
-    
 
 @app.route('/jobs')
 def jobs():
@@ -511,6 +512,26 @@ def generate_student_cv():
 
     return redirect(url_for('profile'))
 
+@app.route('/download_link_cv', methods=['GET'])
+def download_link_cv():
+    if not session.get('logged_in'):
+        flash('Please log in to access this page.', 'warning')
+        return redirect(url_for('login'))
+
+    user_id = session.get('user_id')
+    response = requests.get(f'{backend_url}/user_details?userID={user_id}')
+
+    if response.status_code == 200:
+        user_details = response.json()
+        cv_filename = user_details.get('cv_path')
+        if cv_filename:
+            cv_download_link = url_for('download_student_cv', filename=cv_filename.split('/')[-1], _external=True)
+            return jsonify({'download_link': cv_download_link})
+        else:
+            return jsonify({'error': 'CV not found'}), 404
+    else:
+        return jsonify({'error': 'Failed to fetch user details'}), 500
+
 @app.route('/download_student_cv', methods=['POST'])
 def download_student_cv():
     if not session.get('logged_in'):
@@ -533,6 +554,43 @@ def download_student_cv():
         flash('Failed to fetch user details. Please try again.', 'danger')
 
     return redirect(url_for('profile'))
+
+@app.route('/apply_for_job', methods=['POST'])
+def apply_for_job():
+    if not session.get('logged_in'):
+        flash('Please log in to access this page.', 'warning')
+        return redirect(url_for('login'))
+
+    user_id = int(session.get('user_id'))  # Convert user_id to an integer
+    job_id = int(request.form.get('job_id'))  # Convert job_id to an integer
+    company_email = request.form.get('company_email')
+
+    # Get user details to construct the CV download link
+    user_details_response = requests.get(f'{backend_url}/user_details?userID={user_id}')
+    if user_details_response.status_code == 200:
+        user_details = user_details_response.json()
+        cv_filename = user_details.get('cv_path').split('/')[-1]
+        cv_download_link = url_for('static', filename='assets/pdf/cv/' + cv_filename, _external=True)
+
+        # Send the application to the backend
+        response = requests.post(
+            f'{backend_url}/apply_for_job',
+            json={
+                'user_id': user_id,
+                'job_id': job_id,
+                'company_email': company_email,
+                'cv_download_link': cv_download_link
+            }
+        )
+
+        if response.status_code == 200:
+            flash('Application submitted successfully!', 'success')
+        else:
+            flash('Failed to apply for job. Please try again.', 'danger')
+    else:
+        flash('Failed to fetch user details for CV download link.', 'danger')
+
+    return redirect(url_for('main_dashboard'))
 
 #######################################################################################
 #                                  Job Specific Routes                                #

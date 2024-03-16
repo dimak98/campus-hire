@@ -158,3 +158,25 @@ func ResetPassword(db *sql.DB, token, newPassword string) (string, error) {
 
     return email, nil
 }
+
+func SendEmail(cfg *config.Config, recipient, subject, body string) error {
+    from := cfg.Email
+    password := cfg.EmailPassword
+    smtpHost := cfg.SMTPHost
+    smtpPort := cfg.SMTPPort
+
+    message := []byte("To: " + recipient + "\r\n" +
+        "Subject: " + subject + "\r\n\r\n" +
+        body)
+
+    auth := smtp.PlainAuth("", from, password, smtpHost)
+
+    err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, []string{recipient}, message)
+    if err != nil {
+        log.Printf("Error sending email to %s: %v", recipient, err)
+        return err
+    }
+
+    log.Printf("Email sent to %s successfully", recipient)
+    return nil
+}

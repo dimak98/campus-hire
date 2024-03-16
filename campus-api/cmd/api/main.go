@@ -42,6 +42,9 @@ func main() {
     // Post routes
     http.HandleFunc("/post_job", handlers.CreateJobPostHandler(db))
 
+    // Update Routes
+    http.HandleFunc("/apply_for_job", handlers.ApplyForJobHandler(db, cfg))
+
     log.Println("Starting server on port 8080...")
     if err := http.ListenAndServe(":8080", nil); err != nil {
         log.Fatal("Failed to start server:", err)

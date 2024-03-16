@@ -69,6 +69,7 @@ type JobPost struct {
     Status       string `json:"status"`
     Salary       string `json:"salary"`
     Address      string `json:"address"`
+    CompanyEmail string `json:"company_email"`
     CompanyName  string `json:"company_name,omitempty"`
 }
 

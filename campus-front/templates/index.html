@@ -205,8 +205,15 @@
               {% elif job.status == 'Closed' %}
               <td><span class="badge bg-danger">Closed</span></td>
               {% endif %}
-              <td><button class="btn btn-primary">Apply</button></td>
-              <td><button class="btn btn-primary" onclick="window.location.href='/job/{{ job.id }}'">Open</button></td>
+              <td>
+                <form action="{{ url_for('apply_for_job') }}" method="post">
+                  <input type="hidden" name="job_id" value="{{ job.id }}">
+                  <input type="hidden" name="company_email" value="{{ job.company_email }}">
+                  <input type="hidden" name="cv_url" value="{{ url_for('static', filename='assets/pdf/cv/' + user_details.cv_path) }}">
+                  <button type="submit" class="btn btn-primary">Apply</button>
+              </form>                                         
+              </td>
+            <td><button class="btn btn-primary" onclick="window.location.href='/job/{{ job.id }}'">Open</button></td>
             </tr>
             {% endfor %}
             {% endif %}
