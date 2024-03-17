@@ -37,7 +37,7 @@ services:
       SMTP_HOST: smtp.gmail.com
       SMTP_PORT: "587"
       EMAIL: campushireteam@gmail.com
-      EMAIL_PASSWORD: lumr hxwb poad ixan
+      EMAIL_PASSWORD: ${EMAIL_PASS}
       FRONTEND_URL: https://campus-hire.online
     depends_on:
       - postgres
