@@ -232,20 +232,21 @@
                 <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
 
                   <!-- Profile Edit Form -->
-                  <form>
+                  <form action="{{ url_for('edit_student_job') }}" method="post">
 
                     <div class="row mb-3">
                       <div class="col-md-8 col-lg-9">
                         {% for job in user_details.jobs %}
                           <div class="job-entry">
+                            <input type="hidden" name="job_id" value="{{ job.id }}">
                             <label for="company" class="col-md-4 col-lg-3 col-form-label">Company:</label>
                             <input name="company" type="text" class="form-control" id="company" value="{{ job.company }}">
                             <label for="Job" class="col-form-label">Title:</label>
                             <input name="job" type="text" class="form-control" id="Job" value="{{ job.title }}">
                             <label for="datepicker" class="col-form-label">Start Date:</label>
-                            <input type="text" class="form-control" id="datepicker" name="selected_date" value="{{ job.startDate }}">
+                            <input type="text" class="form-control" id="datepicker" name="start_date" value="{{ job.startDate }}">
                             <label for="datepicker" class="col-form-label">End Date:</label>
-                            <input type="text" class="form-control" id="datepicker2" name="selected_date" value="{{ job.endDate }}">
+                            <input type="text" class="form-control" id="datepicker2" name="end_date" value="{{ job.endDate }}">
                             <label for="about" class="col-form-label">Description:</label>
                             <textarea name="about" class="form-control" id="about" style="height: 100px">{{ job.description }}</textarea>
                           </div>
@@ -266,12 +267,13 @@
                 <div class="tab-pane fade pt-3" id="profile-settings">
 
                   <!-- Settings Form -->
-                  <form>
+                  <form action="{{ url_for('edit_education') }}" method="post">
 
                     <div class="row mb-3">
                       <div class="col-md-8 col-lg-9">
                         {% for ed in user_details.education %}
                           <div class="job-entry">
+                            <input type="hidden" name="education_id" value="{{ ed.id }}">
                             <label for="school" class="col-md-4 col-lg-3 col-form-label">School:</label>
                             <input name="company" type="text" class="form-control" id="company" value="{{ ed.school }}">
                             <label for="degree" class="col-form-label">Degree:</label>
@@ -279,9 +281,9 @@
                             <label for="fieldOfStudy" class="col-form-label">Field of study:</label>
                             <input name="fieldOfStudy" type="text" class="form-control" id="Job" value="{{ ed.fieldOfStudy }}">                            
                             <label for="datepicker" class="col-form-label">Start Date:</label>
-                            <input type="text" class="form-control" id="datepicker" name="selected_date" value="{{ ed.startDate }}">
+                            <input type="text" class="form-control" id="datepicker" name="start_date" value="{{ ed.startDate }}">
                             <label for="datepicker" class="col-form-label">End Date:</label>
-                            <input type="text" class="form-control" id="datepicker2" name="selected_date" value="{{ ed.endDate }}">
+                            <input type="text" class="form-control" id="datepicker2" name="end_date" value="{{ ed.endDate }}">
                             <label for="about" class="col-form-label">Description:</label>
                             <textarea name="about" class="form-control" id="about" style="height: 100px">{{ ed.description }}</textarea>
                           </div>

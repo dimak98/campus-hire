@@ -23,6 +23,7 @@ type StudentDetails struct {
 
 // StudentJob represents a job entry for a student.
 type StudentJob struct {
+    ID          string `json:"id"`
     Title       string `json:"title"`
     Company     string `json:"company"`
     StartDate   string `json:"startDate"`
@@ -32,6 +33,7 @@ type StudentJob struct {
 
 // StudentEducation represents an education entry for a student.
 type StudentEducation struct {
+    ID           string `json:"id"`
     School       string `json:"school"`
     Degree       string `json:"degree"`
     FieldOfStudy string `json:"fieldOfStudy"`
@@ -144,7 +146,7 @@ func fetchStudentDetails(db *sql.DB, userID string) (*StudentDetails, error) {
     }
 
     // Fetch jobs
-    rows, err := db.Query("SELECT title, company, start_date, end_date, description FROM jobs WHERE user_id = $1", userID)
+    rows, err := db.Query("SELECT id, title, company, start_date, end_date, description FROM jobs WHERE user_id = $1", userID)
     if err != nil {
         return nil, err
     }
@@ -152,14 +154,14 @@ func fetchStudentDetails(db *sql.DB, userID string) (*StudentDetails, error) {
 
     for rows.Next() {
         var job StudentJob
-        if err := rows.Scan(&job.Title, &job.Company, &job.StartDate, &job.EndDate, &job.Description); err != nil {
+        if err := rows.Scan(&job.ID ,&job.Title, &job.Company, &job.StartDate, &job.EndDate, &job.Description); err != nil {
             return nil, err
         }
         studentDetails.Jobs = append(studentDetails.Jobs, job)
     }
 
     // Fetch education
-    rows, err = db.Query("SELECT school, degree, field_of_study, start_date, end_date, description FROM education WHERE user_id = $1", userID)
+    rows, err = db.Query("SELECT id, school, degree, field_of_study, start_date, end_date, description FROM education WHERE user_id = $1", userID)
     if err != nil {
         return nil, err
     }
@@ -167,7 +169,7 @@ func fetchStudentDetails(db *sql.DB, userID string) (*StudentDetails, error) {
 
     for rows.Next() {
         var edu StudentEducation
-        if err := rows.Scan(&edu.School, &edu.Degree, &edu.FieldOfStudy, &edu.StartDate, &edu.EndDate, &edu.Description); err != nil {
+        if err := rows.Scan(&edu.ID ,&edu.School, &edu.Degree, &edu.FieldOfStudy, &edu.StartDate, &edu.EndDate, &edu.Description); err != nil {
             return nil, err
         }
         studentDetails.Education = append(studentDetails.Education, edu)

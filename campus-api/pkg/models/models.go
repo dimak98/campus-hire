@@ -95,3 +95,30 @@ type CompanyRegistrationRequest struct {
     ImagePath       string   `json:"image_path"`
     VideoPath       string   `json:"video_path"`
 }
+
+// StudentJob represents a job experience of a student.
+type StudentJob struct {
+    ID          int       `json:"id"`
+    UserID      int       `json:"user_id"`
+    Title       string    `json:"title"`
+    Company     string    `json:"company"`
+    StartDate   string    `json:"start_date"`
+    EndDate     string    `json:"end_date"`
+    Description string    `json:"description"`
+    CreatedAt   time.Time `json:"created_at"`
+    UpdatedAt   time.Time `json:"updated_at"`
+}
+
+// Company represents a company's information.
+type Company struct {
+    ID          int       `json:"id"`
+    UserID      int       `json:"user_id"`
+    Name        string    `json:"name"`
+    Size        string    `json:"size"`
+    Address     string    `json:"address"`
+    Description string    `json:"description"`
+    ImagePath   string    `json:"image_path"`
+    VideoPath   string    `json:"video_path"`
+    CreatedAt   time.Time `json:"created_at"`
+    UpdatedAt   time.Time `json:"updated_at"`
+}

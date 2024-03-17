@@ -44,6 +44,9 @@ func main() {
 
     // Update Routes
     http.HandleFunc("/apply_for_job", handlers.ApplyForJobHandler(db, cfg))
+    http.HandleFunc("/edit_company", handlers.EditCompanyHandler(db))
+    http.HandleFunc("/edit_student_job", handlers.EditStudentJobHandler(db))
+    http.HandleFunc("/edit_education", handlers.EditEducationHandler(db))
 
     log.Println("Starting server on port 8080...")
     if err := http.ListenAndServe(":8080", nil); err != nil {

@@ -431,6 +431,31 @@
 <script>
     $(document).ready(function(){
 
+      // Function to validate file extension
+         function validateFileExtension(file, allowedExtensions, errorMessage) {
+            if (!allowedExtensions.test(file.name)) {
+                alert(errorMessage);
+                $(this).val(""); // Clear the file input
+                // Disable the next button
+                $(this).closest('fieldset').find('.next').prop('disabled', true);
+                return false;
+            }
+            return true;
+        }
+
+        // Event listener for image file input change
+        $('input[type="file"][name="profile_image"]').change(function() {
+            var file = this.files[0];
+            var allowedExtensions = /(\.png)$/i; // Only allow PNG files
+            var errorMessage = "Please select a PNG image.";
+            if (!validateFileExtension.call(this, file, allowedExtensions, errorMessage)) {
+                return;
+            } else {
+                // Enable the next button
+                $(this).closest('fieldset').find('.next').prop('disabled', false);
+            }
+        });
+
     $('.select2').select2({
         placeholder: "Select Field of Study",
         allowClear: true,

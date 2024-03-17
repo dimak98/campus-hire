@@ -286,85 +286,127 @@
     </div>
 </div>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+
 <script>
     $(document).ready(function(){
 
-    document.getElementById('submitBtn').addEventListener('click', function() {
-        document.getElementById('msform').submit();
-    });
+        // Function to validate file extension
+        function validateFileExtension(file, allowedExtensions, errorMessage) {
+            if (!allowedExtensions.test(file.name)) {
+                alert(errorMessage);
+                $(this).val(""); // Clear the file input
+                // Disable the next button
+                $(this).closest('fieldset').find('.next').prop('disabled', true);
+                return false;
+            }
+            return true;
+        }
 
-    var current_fs, next_fs, previous_fs; //fieldsets
-    var opacity;
-    var current = 1;
-    var steps = $("fieldset").length;
+        // Event listener for image file input change
+        $('input[type="file"][name="company_image"]').change(function() {
+        var file = this.files[0];
+        var allowedExtensions = /(\.png|\.jpe?g)$/i; // Allow PNG, JPG, JPEG files
+        var errorMessage = "Please select a PNG, JPG, or JPEG image.";
+        if (!validateFileExtension.call(this, file, allowedExtensions, errorMessage)) {
+            return;
+        } else {
+            // Enable the next button
+            $(this).closest('fieldset').find('.next').prop('disabled', false);
+        }
+        });     
 
-    setProgressBar(current);
+        // Function to validate video file
+        function validateVideo(file) {
+            var maxFileSize = 100 * 1024 * 1024; // 7 MB
+            var allowedExtensions = /(\.mp4)$/i; // Only allow MP4 files
+            return file.size <= maxFileSize && allowedExtensions.test(file.name);
+        }
 
-    $(".next").click(function(){
+        // Event listener for video file input change
+        $('input[type="file"][name="video"]').change(function() {
+            var file = this.files[0];
+            if (file && !validateVideo(file)) {
+                alert("Please select a valid MP4 video file (not exceeding 7MB).");
+                $(this).val(""); // Clear the file input
+            }
+        });
 
-    current_fs = $(this).parent();
-    next_fs = $(this).parent().next();
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            document.getElementById('msform').submit();
+        });    
 
-    //Add Class Active
-    $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+        var current_fs, next_fs, previous_fs; //fieldsets
+        var opacity;
+        var current = 1;
+        var steps = $("fieldset").length;
 
-    //show the next fieldset
-    next_fs.show();
-    //hide the current fieldset with style
-    current_fs.animate({opacity: 0}, {
-    step: function(now) {
-    // for making fielset appear animation
-    opacity = 1 - now;
+        setProgressBar(current);
 
-    current_fs.css({
-    'display': 'none',
-    'position': 'relative'
-    });
-    next_fs.css({'opacity': opacity});
-    },
-    duration: 500
-    });
-    setProgressBar(++current);
-    });
+        $(".next").click(function(){
 
-    $(".previous").click(function(){
+        current_fs = $(this).parent();
+        next_fs = $(this).parent().next();
 
-    current_fs = $(this).parent();
-    previous_fs = $(this).parent().prev();
+        //Add Class Active
+        $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
 
-    //Remove class active
-    $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+        //show the next fieldset
+        next_fs.show();
+        //hide the current fieldset with style
+        current_fs.animate({opacity: 0}, {
+        step: function(now) {
+        // for making fielset appear animation
+        opacity = 1 - now;
 
-    //show the previous fieldset
-    previous_fs.show();
+        current_fs.css({
+        'display': 'none',
+        'position': 'relative'
+        });
+        next_fs.css({'opacity': opacity});
+        },
+        duration: 500
+        });
+        setProgressBar(++current);
+        });
 
-    //hide the current fieldset with style
-    current_fs.animate({opacity: 0}, {
-    step: function(now) {
-    // for making fielset appear animation
-    opacity = 1 - now;
+        $(".previous").click(function(){
 
-    current_fs.css({
-    'display': 'none',
-    'position': 'relative'
-    });
-    previous_fs.css({'opacity': opacity});
-    },
-    duration: 500
-    });
-    setProgressBar(--current);
-    });
+        current_fs = $(this).parent();
+        previous_fs = $(this).parent().prev();
 
-    function setProgressBar(curStep){
-    var percent = parseFloat(100 / steps) * curStep;
-    percent = percent.toFixed();
-    $(".progress-bar")
-    .css("width",percent+"%")
-    }
+        //Remove class active
+        $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
 
-    $(".submit").click(function(){
-    return false;
-    })
+        //show the previous fieldset
+        previous_fs.show();
+
+        //hide the current fieldset with style
+        current_fs.animate({opacity: 0}, {
+        step: function(now) {
+        // for making fielset appear animation
+        opacity = 1 - now;
+
+        current_fs.css({
+        'display': 'none',
+        'position': 'relative'
+        });
+        previous_fs.css({'opacity': opacity});
+        },
+        duration: 500
+        });
+        setProgressBar(--current);
+        });
+
+        function setProgressBar(curStep){
+        var percent = parseFloat(100 / steps) * curStep;
+        percent = percent.toFixed();
+        $(".progress-bar")
+        .css("width",percent+"%")
+        }
+
+        $(".submit").click(function(){
+        return false;
+        })
 
     });
 </script>

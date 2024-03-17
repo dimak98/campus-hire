@@ -36,7 +36,7 @@ cv_url = 'http://cv:3000'
 #######################################################################################
 
 def allowed_file(filename):
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp4', 'avi'}
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'mp4'}
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -442,9 +442,117 @@ def company_view(userID):
     
     return render_template('profile_view_company.html', company_details=company_details, user_details=user_details)
 
+@app.route('/edit_company', methods=['POST'])
+def edit_company():
+    if not session.get('logged_in'):
+        flash('Please log in to access this page.', 'warning')
+        return redirect(url_for('login'))
+
+    user_id = session.get('user_id')
+    address = request.form.get('address')
+    size = request.form.get('size')
+    fname = request.form.get('fname')
+    email = request.form.get('email')
+    description = request.form.get('about')
+
+    app.logger.info(f'Editing company for user_id: {user_id}')
+
+    response = requests.put(
+        f'{backend_url}/edit_company',
+        json={
+            'user_id': user_id,
+            'address': address,
+            'size': size,
+            'fname': fname,
+            'email': email,
+            'description': description
+        }
+    )
+
+    if response.status_code == 200:
+        flash('Company details updated successfully!', 'success')
+    else:
+        flash('Failed to update company details. Please try again.', 'danger')
+
+    return redirect(url_for('profile'))
+
 #######################################################################################
 #                                  Student Specific Routes                            #
 #######################################################################################
+
+@app.route('/edit_education', methods=['POST'])
+def edit_education():
+    if not session.get('logged_in'):
+        flash('Please log in to access this page.', 'warning')
+        return redirect(url_for('login'))
+
+    user_id = session.get('user_id')
+    education_id = request.form.get('education_id')
+    school = request.form.get('company')
+    degree = request.form.get('degree')
+    field_of_study = request.form.get('fieldOfStudy')
+    start_date = request.form.get('start_date')
+    end_date = request.form.get('end_date')
+    description = request.form.get('about')
+
+    app.logger.info(f'edit for {user_id} education {education_id}')
+
+    response = requests.put(
+        f'{backend_url}/edit_education',
+        json={
+            'userId': int(user_id),
+            'id': int(education_id),
+            'school': school,
+            'degree': degree,
+            'fieldOfStudy': field_of_study,
+            'startDate': start_date,
+            'endDate': end_date,
+            'description': description
+        }
+    )
+
+    if response.status_code == 200:
+        flash('Education updated successfully!', 'success')
+    else:
+        flash('Failed to update education. Please try again.', 'danger')
+
+    return redirect(url_for('profile'))
+
+@app.route('/edit_student_job', methods=['POST'])
+def edit_student_job():
+    if not session.get('logged_in'):
+        flash('Please log in to access this page.', 'warning')
+        return redirect(url_for('login'))
+
+    user_id = session.get('user_id')
+    job_id = request.form.get('job_id')
+    company = request.form.get('company')
+    title = request.form.get('job')
+    start_date = request.form.get('start_date')
+    end_date = request.form.get('end_date')
+    description = request.form.get('about')
+
+    app.logger.info(f'edit for {user_id} job {job_id}')
+
+    response = requests.put(
+        f'{backend_url}/edit_student_job',
+        json={
+            'user_id': int(user_id),
+            'id': int(job_id),
+            'company': company,
+            'title': title,
+            'start_date': start_date,
+            'end_date': end_date,
+            'description': description
+        }
+    )
+
+    if response.status_code == 200:
+        flash('Student job updated successfully!', 'success')
+    else:
+        flash('Failed to update student job. Please try again.', 'danger')
+
+    return redirect(url_for('profile'))
 
 @app.route('/student/<int:userID>', methods=['GET'])
 def student_view(userID):
