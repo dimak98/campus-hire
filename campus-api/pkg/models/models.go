@@ -113,7 +113,9 @@ type StudentJob struct {
 type Company struct {
     ID          int       `json:"id"`
     UserID      int       `json:"user_id"`
+    Fname       string    `json:"fname"`
     Name        string    `json:"name"`
+    Email       string 
     Size        string    `json:"size"`
     Address     string    `json:"address"`
     Description string    `json:"description"`

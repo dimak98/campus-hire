@@ -97,8 +97,8 @@ func EditCompanyHandler(db *sql.DB) http.HandlerFunc {
 
         log.Printf("Received request to update company: %+v", company)
 
-        query := `UPDATE companies SET name=$1, size=$2, address=$3, description=$4 WHERE user_id=$5`
-        _, err := db.Exec(query, company.Name, company.Size, company.Address, company.Description, company.UserID)
+        query := `UPDATE companies SET size=$2, address=$3, description=$4, fname=$5, email=$6 WHERE user_id=$1`
+        _, err := db.Exec(query, company.UserID, company.Size, company.Address, company.Description, company.Fname, )
         if err != nil {
             log.Printf("Error updating company: %v", err)
             http.Error(w, "Failed to update company", http.StatusInternalServerError)

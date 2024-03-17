@@ -460,12 +460,12 @@ def edit_company():
     response = requests.put(
         f'{backend_url}/edit_company',
         json={
-            'user_id': user_id,
-            'address': address,
+            'user_id':int(user_id),
             'size': size,
+            'address': address,
+            'description': description
             'fname': fname,
             'email': email,
-            'description': description
         }
     )
 
