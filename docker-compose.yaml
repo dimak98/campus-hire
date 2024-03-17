@@ -50,7 +50,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      API_KEY: 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
+      API_KEY: ${CV_API_KEY}
       ICONS_PATH: /usr/src/app/icons
       PDF_DIR: /usr/src/app/cvs
       DB_HOST: postgres
