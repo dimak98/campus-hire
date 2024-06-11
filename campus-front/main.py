@@ -28,8 +28,8 @@ app = Flask(__name__, static_folder='templates/static')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['CV_UPLOAD_FOLDER'] = CV_UPLOAD_FOLDER
 app.secret_key = 'ed0a9528-5906-457e-a373-f288b5e42579'
-backend_url = 'http://api:8080'
-cv_url = 'http://cv:3000'
+backend_url = os.environ.get('BACKEND_URL','http://api:8080')
+cv_url = os.environ.get('CV_URL', 'http://cv:3000')
 
 #######################################################################################
 #                                  Helpers                                            #
